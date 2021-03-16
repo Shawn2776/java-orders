@@ -1,6 +1,8 @@
 package com.lambda.javaorders.models;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "orders")
@@ -14,15 +16,26 @@ public class Order
     private double ordamount;
     private String orderdescription;
 
+    @ManyToOne
+    @JoinColumn(name = "custcode", nullable = false)
+    private Customer customer;
+
+    @ManyToMany
+    @JoinTable(name = "orderspayments",
+        joinColumns = @JoinColumn(name = "ordnum"),
+        inverseJoinColumns = @JoinColumn(name = "paymentid"))
+    private Set<Payment> payments = new HashSet<>();
+
     public Order()
     {
         // default constructor
     }
 
-    public Order(double advanceamount, double ordamount, String orderdescription) {
+    public Order(double advanceamount, double ordamount, String orderdescription, Customer customer) {
         this.advanceamount = advanceamount;
         this.ordamount = ordamount;
         this.orderdescription = orderdescription;
+        this.customer = customer;
     }
 
     public long getOrdnum() {
@@ -55,6 +68,22 @@ public class Order
 
     public void setOrderdescription(String orderdescription) {
         this.orderdescription = orderdescription;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Set<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(Set<Payment> payments) {
+        this.payments = payments;
     }
 
     @Override
